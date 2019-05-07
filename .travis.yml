@@ -10,9 +10,11 @@ before_install:
   - sudo apt-get install libtcmalloc-minimal4
   - export LD_PRELOAD="/usr/lib/libtcmalloc_minimal.so.4"
   - pip install --upgrade pip setuptools wheel
-  - 'pip install --ignore-installed --no-binary :none: numpy'
 install:
-  - pip install --ignore-installed -U -q --no-use-pep517 -e .[complete];
+  # Install first to get NumPy then everything
+  - pip install --ignore-installed -U -q --no-use-pep517 -e .
+  - pip freeze
+  - pip install -U -q --no-use-pep517 -e .[complete]
   - pip freeze
 script:
   - pyflakes pyhf
