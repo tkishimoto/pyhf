@@ -3,6 +3,7 @@ dist: xenial
 language: python
 cache: pip
 python:
+  - '2.7'
   - '3.6'
   - '3.7'
 before_install:
@@ -45,13 +46,13 @@ env:
 
 jobs:
   include:
-  - dist: trusty
-    python: '2.7'
+  # - dist: trusty
+  #   python: '2.7'
   - dist: trusty
     python: '3.6'
   - name: "Python 2.7 Notebook Tests"
     python: '2.7'
-    dist: trusty
+    # dist: trusty
     script:
       - python -m pytest tests/test_notebooks.py
     after_success: skip
