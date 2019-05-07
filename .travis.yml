@@ -11,11 +11,7 @@ before_install:
   - export LD_PRELOAD="/usr/lib/libtcmalloc_minimal.so.4"
   - pip install --upgrade pip setuptools wheel
 install:
-  - if [[ $TRAVIS_DIST == 'trusty' ]]; then
-      pip install --ignore-installed -U -q --no-use-pep517 --no-cache-dir -e .[complete];
-    else
-      pip install --ignore-installed -U -q --no-use-pep517 -e .[complete];
-    fi
+  - pip install --ignore-installed -U -q --no-use-pep517 -e .[complete];
   - pip freeze
 script:
   - pyflakes pyhf
@@ -50,6 +46,10 @@ jobs:
   #   python: '2.7'
   - dist: trusty
     python: '3.6'
+    install:
+      # Trusty has memory issues
+      - pip install --ignore-installed -U -q --no-use-pep517 --no-cache-dir -e .[complete];
+      - pip freeze
   - name: "Python 2.7 Notebook Tests"
     python: '2.7'
     # dist: trusty
@@ -59,6 +59,10 @@ jobs:
   - name: "Python 3.6 Notebook Tests"
     python: '3.6'
     dist: trusty
+    install:
+      # Trusty has memory issues
+      - pip install --ignore-installed -U -q --no-use-pep517 --no-cache-dir -e .[complete];
+      - pip freeze
     script:
       - python -m pytest tests/test_notebooks.py
     after_success: skip
