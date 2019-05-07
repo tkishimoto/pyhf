@@ -12,6 +12,8 @@ before_install:
   - pip install --upgrade pip setuptools wheel
 install:
   - pip install --ignore-installed -U -q --no-use-pep517 -e .[complete];
+  - pip uninstall -y iminuit;
+  - pip install --ignore-installed "git+https://github.com/scikit-hep/iminuit.git#egg=iminuit";
   - pip freeze
 script:
   - pyflakes pyhf
