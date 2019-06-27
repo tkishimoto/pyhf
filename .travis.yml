@@ -31,7 +31,7 @@ stages:
   - name: docs
     if: (branch = master) OR (branch =~ /^docs\//)
   - name: binder
-    if: (branch = master) AND (NOT (type IN (pull_request)))
+    # if: (branch = master) AND (NOT (type IN (pull_request)))
   - name: deploy
 
 env:
