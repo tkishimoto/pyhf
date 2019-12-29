@@ -1,7 +1,10 @@
 from setuptools import setup, find_packages
 from os import path
+import sys
 
 this_directory = path.abspath(path.dirname(__file__))
+if sys.version_info.major < 3:
+    from io import open
 with open(path.join(this_directory, 'README.md'), encoding='utf-8') as readme_md:
     long_description = readme_md.read()
 
@@ -83,6 +86,8 @@ setup(
     license='Apache',
     keywords='physics fitting numpy scipy tensorflow pytorch',
     classifiers=[
+        "Programming Language :: Python :: 2",
+        "Programming Language :: Python :: 2.7",
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
@@ -90,7 +95,7 @@ setup(
     package_dir={'': 'src'},
     packages=find_packages(where='src'),
     include_package_data=True,
-    python_requires=">=3.6",
+    python_requires=">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*, !=3.5.*",
     install_requires=[
         'scipy',  # requires numpy, which is required by pyhf and tensorflow
         'click>=6.0',  # for console scripts,
