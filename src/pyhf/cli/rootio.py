@@ -8,14 +8,6 @@ import jsonpatch
 logging.basicConfig()
 log = logging.getLogger(__name__)
 
-# This is only needed for Python 2/3 compatibility
-def ensure_dirs(path):
-    try:
-        os.makedirs(path, exist_ok=True)  # lgtm [py/call/wrong-named-argument]
-    except TypeError:
-        if not os.path.exists(path):
-            os.makedirs(path)
-
 
 @click.group(name='rootio')
 def cli():
@@ -45,7 +37,7 @@ def xml2json(entrypoint_xml, basedir, output_file, track_progress):
     except ImportError:
         log.error(
             "xml2json requires uproot, please install pyhf using the "
-            "xmlio extra: pip install pyhf[xmlio]"
+            "xmlio extra: python -m pip install pyhf[xmlio]"
         )
     from .. import readxml
 
@@ -73,18 +65,18 @@ def json2xml(workspace, output_dir, specroot, dataroot, resultprefix, patch):
     except ImportError:
         log.error(
             "json2xml requires uproot, please install pyhf using the "
-            "xmlio extra: pip install pyhf[xmlio]"
+            "xmlio extra: python -m pip install pyhf[xmlio]"
         )
     from .. import writexml
 
-    ensure_dirs(output_dir)
+    os.makedirs(output_dir, exist_ok=True)
     with click.open_file(workspace, 'r') as specstream:
         spec = json.load(specstream)
         for pfile in patch:
             patch = json.loads(click.open_file(pfile, 'r').read())
             spec = jsonpatch.JsonPatch(patch).apply(spec)
-        ensure_dirs(os.path.join(output_dir, specroot))
-        ensure_dirs(os.path.join(output_dir, dataroot))
+        os.makedirs(os.path.join(output_dir, specroot), exist_ok=True)
+        os.makedirs(os.path.join(output_dir, dataroot), exist_ok=True)
         with click.open_file(
             os.path.join(output_dir, '{0:s}.xml'.format(resultprefix)), 'w'
         ) as outstream:
