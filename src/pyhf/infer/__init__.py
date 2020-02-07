@@ -1,12 +1,24 @@
 """Inference for Statistical Models."""
 
-from .test_statistics import qmu
+from .test_statistics import q0, qmu
 from .utils import (
     generate_asimov_data,
     pvals_from_teststat,
     pvals_from_teststat_expected,
 )
 from .. import get_backend
+
+def hypotest_z0(
+    data, pdf, init_pars=None, par_bounds=None, qtilde=False, **kwargs
+):
+    init_pars = init_pars or pdf.config.suggested_init()
+    par_bounds = par_bounds or pdf.config.suggested_bounds()
+    tensorlib, _ = get_backend()
+
+    q0_v = q0(data, pdf, init_pars, par_bounds)
+    sqrtq0_v = tensorlib.sqrt(q0_v)
+
+    return sqrtq0_v
 
 
 def hypotest(
@@ -106,4 +118,4 @@ def hypotest(
     return tuple(_returns) if len(_returns) > 1 else _returns[0]
 
 
-__all__ = ['qmu', 'hypotest']
+__all__ = ['q0', 'qmu', 'hypotest']

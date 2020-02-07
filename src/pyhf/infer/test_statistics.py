@@ -1,6 +1,25 @@
 from .. import get_backend
 from .mle import fixed_poi_fit, fit
 
+def q0(data, pdf, init_pars, par_bounds):
+    r"""
+    Equation (12) in :xref:`arXiv:1007.1727`.
+    """
+    tensorlib, optimizer = get_backend()
+    mubhathat, fixed_poi_fit_lhood_val = fixed_poi_fit(
+        0, data, pdf, init_pars, par_bounds, return_fitted_val=True
+    )
+    muhatbhat, unconstrained_fit_lhood_val = fit(
+        data, pdf, init_pars, par_bounds, return_fitted_val=True
+    )
+    q0 = fixed_poi_fit_lhood_val - unconstrained_fit_lhood_val
+    q0 = tensorlib.where(
+        muhatbhat[pdf.config.poi_index] < 0, tensorlib.astensor(0.0), q0
+    )[0]
+    return tensorlib.clip(q0, 0, max_value=None)
+    
+
+
 
 def qmu(mu, data, pdf, init_pars, par_bounds):
     r"""
